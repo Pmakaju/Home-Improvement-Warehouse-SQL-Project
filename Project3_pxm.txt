@@ -1,0 +1,573 @@
+SQL> 
+SQL> -- Pradeep Makaju
+SQL> -- INSY 3304-001
+SQL> -- Project 3
+SQL> 
+SQL> --Part I1, I2, I3
+SQL> 
+SQL> SET LINESIZE 150
+SQL> SET PAGESIZE 50
+SQL> 
+SQL> COLUMN CommClass FORMAT a10
+SQL> COLUMN OrderDate FORMAT a10
+SQL> COLUMN CustID FORMAT a15
+SQL> 
+SQL> 
+SQL> --Part I4
+SQL> 
+SQL> --Adding new customer
+SQL> INSERT INTO CUSTOMER_pxm
+  2  VALUES ('T104', 'Wes', 'Thomas', '4695551215', 22) ;
+
+1 row created.
+
+SQL> 
+SQL> --Part I5
+SQL> 
+SQL> --Adding a new product
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (246, 'Milwaukee Power Drill', 2, 179) ;
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part I6
+SQL> 
+SQL> --Add a new Order.
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES ((SELECT (MAX(OrderID) + 1) FROM ORDER_pxm), '28-JAN-2022', 'T104') ;
+
+1 row created.
+
+SQL> 
+SQL> --Add OrderDetails
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES ((SELECT (MAX(OrderID)) FROM ORDER_pxm), 618, 1,
+  3    (SELECT ProdPrice
+  4  	 FROM  PRODUCT_pxm
+  5    WHERE ProdID = 618)) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES ((SELECT (MAX(OrderID)) FROM ORDER_pxm), 407, 2,
+  3    (SELECT ProdPrice
+  4  	 FROM  PRODUCT_pxm
+  5    WHERE ProdID = 407)) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES ((SELECT (MAX(OrderID)) FROM ORDER_pxm), 124, 1,
+  3    (SELECT ProdPrice
+  4  	 FROM  PRODUCT_pxm
+  5    WHERE ProdID = 124)) ;
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part I7
+SQL> 
+SQL> --Add a new Order.
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES ((SELECT (MAX(OrderID) + 1) FROM ORDER_pxm), '29-JAN-2022', 'S100') ;
+
+1 row created.
+
+SQL> 
+SQL> --Add OrderDetails
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES ((SELECT (MAX(OrderID)) FROM ORDER_pxm), 535, 3,
+  3    (SELECT ProdPrice
+  4  	FROM PRODUCT_pxm
+  5    WHERE ProdID = 535)) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES ((SELECT (MAX(OrderID)) FROM ORDER_pxm), 246, 1,
+  3    (SELECT ProdPrice
+  4  	FROM PRODUCT_pxm
+  5    WHERE ProdID = 246)) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES ((SELECT (MAX(OrderID)) FROM ORDER_pxm), 610, 2,
+  3    (SELECT ProdPrice
+  4  	FROM PRODUCT_pxm
+  5    WHERE ProdID = 610)) ;
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part I8
+SQL> 
+SQL> --Change the phone number.
+SQL> UPDATE CUSTOMER_pxm
+  2    SET CustPhone = '8175558918'
+  3  WHERE CustID = 'B200' ;
+
+1 row updated.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part I9
+SQL> 
+SQL> -- COMMIT to save changes to disk.
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> --------------------------------------------------------------------------------------------------------------------------------------------
+SQL> 
+SQL> 
+SQL> --Part II1
+SQL> 
+SQL> 
+SQL> SELECT SalesRepID as "Sales Rep ID" , (SalesRepFName || SalesRepLName) as "SalesRep Name",
+  2  S.CommClass as "Commission Class", CommRate as "Commission Rate"
+  3    FROM SALESREP_pxm S, COMMISSION_pxm C
+  4  WHERE S.CommClass = C.CommClass
+  5  ORDER BY SalesRepLName ;
+
+Sales Rep ID SalesRep Name                      Commission Class     Commission Rate                                                                  
+------------ ---------------------------------- -------------------- ---------------                                                                  
+          14 SaraDay                            Z                                  0                                                                  
+          20 BobJackson                         B                                .08                                                                  
+          10 AliceJones                         A                                 .1                                                                  
+          22 MicahMoore                         Z                                  0                                                                  
+           8 KayPrice                           C                                .05                                                                  
+          12 GregTaylor                         B                                .08                                                                  
+
+6 rows selected.
+
+SQL> 
+SQL> 
+SQL> --Part II2
+SQL> 
+SQL> 
+SQL> SELECT OrderID as "Order ID", ProdID as "Product ID", ProdQty as "Qty", TO_CHAR(ProdPrice, '$999.99') as "Price"
+  2    FROM ORDERDETAIL_pxm
+  3  ORDER BY OrderID, ProdID ;
+
+  Order ID Product ID        Qty Price                                                                                                                
+---------- ---------- ---------- --------                                                                                                             
+       100        121          2    $8.00                                                                                                             
+       100        228          1   $65.00                                                                                                             
+       100        407          1    $4.25                                                                                                             
+       100        480          2    $3.00                                                                                                             
+       101        610        200    $1.75                                                                                                             
+       101        618        100    $1.25                                                                                                             
+       102        121          1    $7.00                                                                                                             
+       102        380          2    $1.25                                                                                                             
+       102        535          4    $7.50                                                                                                             
+       103        121         50    $7.00                                                                                                             
+       103        123         20    $6.25                                                                                                             
+       104        229          1   $50.00                                                                                                             
+       104        380          2    $1.25                                                                                                             
+       104        535          4    $7.50                                                                                                             
+       104        610        200    $1.75                                                                                                             
+       105        123         40    $5.00                                                                                                             
+       105        610        200    $1.75                                                                                                             
+       106        124          1    $6.50                                                                                                             
+       107        229          1   $59.00                                                                                                             
+       108        235          1   $62.00                                                                                                             
+       108        407          1    $5.25                                                                                                             
+       108        618          2    $2.15                                                                                                             
+       109        121          1    $8.25                                                                                                             
+       109        480          1    $3.75                                                                                                             
+       110        124          1    $6.50                                                                                                             
+       110        407          2    $4.25                                                                                                             
+       110        618          1    $1.25                                                                                                             
+       111        246          1  $179.00                                                                                                             
+       111        535          3    $7.50                                                                                                             
+       111        610          2    $1.75                                                                                                             
+
+30 rows selected.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II3
+SQL> 
+SQL> 
+SQL> SELECT CustID as "CustID", CustFName as "CustFirstName", CustLName as "CustLastName",
+  2  ('(' || SUBSTR(CustPhone,1,3) || ')' || SUBSTR(CustPhone,4,3) || '-' || SUBSTR(CustPhone,7,4)) as "CustPhone",
+  3  C.SalesRepID as "SalesRepID", SalesRepFName as "SalesRepFirstName", SalesRepLName as "SalesRepLastName"
+  4    FROM CUSTOMER_pxm C, SALESREP_pxm S
+  5  WHERE  C.SalesRepID = S.SalesRepID
+  6  ORDER BY CustID ;
+
+CustID          CustFirstName   CustLastName    CustPhone                                   SalesRepID SalesRepFirstName SalesRepLastName             
+--------------- --------------- --------------- ------------------------------------------- ---------- ----------------- -----------------            
+A120            Jane            Adams           (817)555-3434                                       12 Greg              Taylor                       
+B200            Ann             Brown           (817)555-8918                                        8 Kay               Price                        
+G070            Kate            Green           (817)555-1034                                       20 Bob               Jackson                      
+G119            Amanda          Green           ()-                                                 14 Sara              Day                          
+J090            Tim             Jones           ()-                                                 14 Sara              Day                          
+S100            John            Smith           (214)555-1212                                       10 Alice             Jones                        
+S120            Nicole          Sims            ()-                                                 22 Micah             Moore                        
+T104            Wes             Thomas          (469)555-1215                                       22 Micah             Moore                        
+
+8 rows selected.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II4
+SQL> 
+SQL> 
+SQL> SELECT D.DeptID as "Dept_ID", DeptName as "DeptName", SalesRepID as "Sales_Rep_ID",
+  2  	     SalesRepFName as "First_Name", SalesRepLName as "Last_Name", S.CommClass as "Commission_Class", CommRate as "CommRate"
+  3    FROM SALESREP_pxm S, DEPARTMENT_pxm D, COMMISSION_pxm C
+  4  WHERE D.DeptID = S.DeptID AND
+  5  	   C.CommClass = S.CommClass AND
+  6  	   (S.DeptID, CommRate) IN
+  7  	 (SELECT S.DeptID, MAX(CommRate)
+  8  	     FROM SALESREP_pxm S, COMMISSION_pxm C
+  9  	     WHERE S.CommClass = C.CommClass
+ 10  	     GROUP BY S.DeptID) ;
+
+   Dept_ID DeptName        Sales_Rep_ID First_Name        Last_Name         Commission_Class       CommRate                                           
+---------- --------------- ------------ ----------------- ----------------- -------------------- ----------                                           
+        10 Store Sales               10 Alice             Jones             A                            .1                                           
+        14 Corp Sales                12 Greg              Taylor            B                           .08                                           
+        16 Web Sales                 22 Micah             Moore             Z                             0                                           
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II5
+SQL> 
+SQL> 
+SQL> SELECT O.ProdID as "Product_ID", ProdName as "Product_Name", ProdCatName as "Category", TO_CHAR(O.ProdPrice, '$999.99') as "Price"
+  2    FROM ORDERDETAIL_pxm O, PRODUCT_pxm P, PRODCAT_pxm PD
+  3  WHERE O.ProdID = P.ProdID AND
+  4  	   P.ProdPrice = P.ProdPrice AND
+  5  	   P.ProdCatID = PD.ProdCatID AND
+  6  	   OrderID = 100 AND
+  7  	   O.ProdPrice =
+  8  	 (SELECT MAX(O.ProdPrice)
+  9  	     FROM ORDERDETAIL_pxm O
+ 10  	     WHERE OrderID = 100) ;
+
+Product_ID Product_Name              Category             Price                                                                                       
+---------- ------------------------- -------------------- --------                                                                                    
+       228 Makita Power Drill        Power Tools            $65.00                                                                                    
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II6
+SQL> 
+SQL> 
+SQL> SELECT DeptName as "Dept_Name", COUNT(SalesRepID) as "Sales_Rep_Count"
+  2    FROM DEPARTMENT_pxm D, SALESREP_pxm S
+  3  WHERE S.DeptID = D.DeptID
+  4  GROUP BY DeptName
+  5  ORDER BY "Sales_Rep_Count"  ;
+
+Dept_Name       Sales_Rep_Count                                                                                                                       
+--------------- ---------------                                                                                                                       
+Web Sales                     1                                                                                                                       
+Corp Sales                    2                                                                                                                       
+Store Sales                   3                                                                                                                       
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II7
+SQL> 
+SQL> 
+SQL> SELECT SalesRepID as "Sales_Rep_ID", SalesRepFName as "First_Name", SalesRepLName as "Last_Name",
+  2  CONCAT(CommRate*100, '%') as "Commission_Rate"
+  3    FROM SALESREP_pxm S, COMMISSION_pxm C
+  4  WHERE S.CommClass = C.CommClass AND
+  5  	   CommRate > 0.00 AND
+  6  	   CommRate <= 0.05
+  7    ORDER BY CommRate DESC;
+
+Sales_Rep_ID First_Name        Last_Name         Commission_Rate                                                                                      
+------------ ----------------- ----------------- -----------------------------------------                                                            
+           8 Kay               Price             5%                                                                                                   
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II8
+SQL> 
+SQL> 
+SQL> SELECT OrderID, TO_CHAR(OrderDate, 'mm/dd/yy') as "OrderDate", O.CustID, CustFName, CustLName,
+  2   C.SalesRepID, SalesRepFName, SalesRepLName
+  3    FROM ORDER_pxm O, CUSTOMER_pxm C, SALESREP_pxm S
+  4  WHERE O.CustID = C.CustID AND
+  5  	   C.SalesRepID = S.SalesRepID
+  6  ORDER BY O.OrderID ;
+
+   ORDERID OrderDate  CUSTID          CUSTFNAME       CUSTLNAME       SALESREPID SALESREPFNAME     SALESREPLNAME                                      
+---------- ---------- --------------- --------------- --------------- ---------- ----------------- -----------------                                  
+       100 01/24/22   S100            John            Smith                   10 Alice             Jones                                              
+       101 01/25/22   A120            Jane            Adams                   12 Greg              Taylor                                             
+       102 01/25/22   J090            Tim             Jones                   14 Sara              Day                                                
+       103 01/26/22   B200            Ann             Brown                    8 Kay               Price                                              
+       104 01/26/22   S100            John            Smith                   10 Alice             Jones                                              
+       105 01/26/22   B200            Ann             Brown                    8 Kay               Price                                              
+       106 01/27/22   G070            Kate            Green                   20 Bob               Jackson                                            
+       107 01/27/22   J090            Tim             Jones                   14 Sara              Day                                                
+       108 01/28/22   S120            Nicole          Sims                    22 Micah             Moore                                              
+       109 01/28/22   G119            Amanda          Green                   14 Sara              Day                                                
+       110 01/28/22   T104            Wes             Thomas                  22 Micah             Moore                                              
+       111 01/29/22   S100            John            Smith                   10 Alice             Jones                                              
+
+12 rows selected.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II9
+SQL> 
+SQL> 
+SQL> SELECT OrderID as "OrderID", P.ProdID as "ProdID", ProdName as "ProdName", ProdCatID as "CatID",
+  2  TO_CHAR(P.ProdPrice, '$999.99') as "Price", ProdQty as "Qty", TO_CHAR((P.ProdPrice)*(ProdQty), '$999.99')as "ExtPrice"
+  3    FROM ORDERDETAIL_pxm O, PRODUCT_pxm P
+  4  WHERE O.ProdID = P.ProdID AND
+  5  	   O.OrderID = 104
+  6  ORDER BY "ExtPrice" ;
+
+   OrderID     ProdID ProdName                       CatID Price           Qty ExtPrice                                                               
+---------- ---------- ------------------------- ---------- -------- ---------- --------                                                               
+       104        380 Acme Yard Stick                    3    $1.25          2    $2.50                                                               
+       104        535 Schlage Door Knob                  5    $7.50          4   $30.00                                                               
+       104        229 BD Power Drill                     2   $59.00          1   $59.00                                                               
+       104        610 3M Duct Tabe                       6    $1.75        200  $350.00                                                               
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II10
+SQL> 
+SQL> 
+SQL> SELECT S.DeptID as "DeptID", DeptName as "DeptName", COUNT(SalesRepID) as "SaleRepCount",
+  2  CONCAT((AVG(CommRate)) *100, '%') as "AvgCommRate"
+  3    FROM DEPARTMENT_pxm D, SALESREP_pxm S, COMMISSION_pxm C
+  4  WHERE S.DeptID = D.DeptID AND
+  5  	   S.CommClass = C.CommClass
+  6  GROUP BY S.DeptID, DeptName
+  7  ORDER BY "AvgCommRate" ;
+
+    DeptID DeptName        SaleRepCount AvgCommRate                                                                                                   
+---------- --------------- ------------ -----------------------------------------                                                                     
+        16 Web Sales                  1 0%                                                                                                            
+        10 Store Sales                3 6%                                                                                                            
+        14 Corp Sales                 2 6.5%                                                                                                          
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II11
+SQL> 
+SQL> SELECT SalesRepID, SalesRepFName, SalesRepLName, DeptName, C.CommClass, CONCAT(CommRate*100, '%') as "CommRate"
+  2  	 FROM SALESREP_pxm S, DEPARTMENT_pxm D, COMMISSION_pxm C
+  3  WHERE S.DeptID = D.DeptID AND
+  4  	   S.CommClass = C.CommClass AND
+  5  	   CommRate > 0
+  6  ORDER BY SalesRepID ;
+
+SALESREPID SALESREPFNAME     SALESREPLNAME     DEPTNAME        COMMCLASS  CommRate                                                                    
+---------- ----------------- ----------------- --------------- ---------- -----------------------------------------                                   
+         8 Kay               Price             Corp Sales      C          5%                                                                          
+                                                                                                                                                      
+                                                                                                                                                      
+        10 Alice             Jones             Store Sales     A          10%                                                                         
+                                                                                                                                                      
+                                                                                                                                                      
+        12 Greg              Taylor            Corp Sales      B          8%                                                                          
+                                                                                                                                                      
+                                                                                                                                                      
+        20 Bob               Jackson           Store Sales     B          8%                                                                          
+                                                                                                                                                      
+                                                                                                                                                      
+
+SQL> 
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II12
+SQL> 
+SQL> SELECT SalesRepID, (SalesRepFName || '' || SalesRepLName) as "SaleRep_Name", S.DeptID, DeptName
+  2    FROM SALESREP_pxm S, DEPARTMENT_pxm D
+  3  WHERE S.DeptID = D.DeptID AND
+  4  	     CommClass = 'A'
+  5  ORDER BY S.DeptID, SalesRepID ;
+
+SALESREPID SaleRep_Name                           DEPTID DEPTNAME                                                                                     
+---------- ---------------------------------- ---------- ---------------                                                                              
+        10 AliceJones                                 10 Store Sales                                                                                  
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II13
+SQL> 
+SQL> COLUMN "Order_Total" FORMAT a11
+SQL> 
+SQL> SELECT OrderID as "Order_ID", TO_CHAR(SUM((ProdPrice)*(ProdQty)), '$999.99') as "Order_Total"
+  2    FROM ORDERDETAIL_pxm
+  3  WHERE OrderID = 104
+  4  GROUP BY OrderID ;
+
+  Order_ID Order_Total                                                                                                                                
+---------- -----------                                                                                                                                
+       104  $432.50                                                                                                                                   
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II14
+SQL> 
+SQL> COLUMN "Avg_Price" FORMAT a10
+SQL> 
+SQL> SELECT TO_CHAR(AVG(ProdPrice), '$999.99') as "Avg_Price"
+  2    FROM ORDERDETAIL_pxm
+  3  ORDER BY ProdPrice ;
+
+Avg_Price                                                                                                                                             
+----------                                                                                                                                            
+  $17.56                                                                                                                                              
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II15
+SQL> 
+SQL> SELECT P.ProdId as "PoductID", ProdName as "Name", P.ProdPrice as "Price"
+  2    FROM ORDERDETAIL_pxm O, PRODUCT_pxm P
+  3  WHERE O.ProdID = P.ProdID AND
+  4  	   O.ProdPrice = P.ProdPrice
+  5  	   GROUP BY P.ProdID, ProdName, P.ProdPrice
+  6  HAVING COUNT(OrderID) =
+  7  	   (SELECT MAX(COUNT(OrderID))
+  8  	     FROM ORDERDETAIL_pxm
+  9  	   GROUP BY ProdID) ;
+
+  PoductID Name                           Price                                                                                                       
+---------- ------------------------- ----------                                                                                                       
+       610 3M Duct Tabe                    1.75                                                                                                       
+
+SQL> 
+SQL> 
+SQL> --Part II16
+SQL> 
+SQL> SELECT ProdCatID as "Cat_ID", ProdID as "Prod_ID", ProdName as "Prod_Name", TO_CHAR(ProdPrice, '$999.99') as "Price"
+  2    FROM PRODUCT_pxm
+  3    WHERE (ProdCatID, ProdPrice) IN
+  4  	     (SELECT ProdCatID, MIN(ProdPrice)
+  5  		 FROM PRODUCT_pxm
+  6  		 GROUP BY ProdCatID) ;
+
+    Cat_ID    Prod_ID Prod_Name                 Price                                                                                                 
+---------- ---------- ------------------------- --------                                                                                              
+         4        480 1# BD Nails                  $3.00                                                                                              
+         6        618 3M Masking Tape              $1.25                                                                                              
+         3        380 Acme Yard Stick              $1.25                                                                                              
+         5        535 Schlage Door Knob            $7.50                                                                                              
+         1        123 Acme Pry Bar                 $6.25                                                                                              
+         2        229 BD Power Drill              $59.00                                                                                              
+
+6 rows selected.
+
+SQL> 
+SQL> 
+SQL> --Part II17
+SQL> 
+SQL> SELECT ProdID, ProdName, ProdCatName, ProdPrice
+  2    FROM PRODUCT_pxm P, PRODCAT_pxm PC
+  3  WHERE P.ProdCatID = PC.ProdCatID AND
+  4  	     ProdPrice >
+  5  	     (SELECT SUM(ProdPrice)/ COUNT(ProdID)
+  6  	       FROM PRODUCT_pxm P) ;
+
+    PRODID PRODNAME                  PRODCATNAME           PRODPRICE                                                                                  
+---------- ------------------------- -------------------- ----------                                                                                  
+       228 Makita Power Drill        Power Tools                  65                                                                                  
+       229 BD Power Drill            Power Tools                  59                                                                                  
+       235 Makita Power Drill        Power Tools                  65                                                                                  
+       246 Milwaukee Power Drill     Power Tools                 179                                                                                  
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II18
+SQL> 
+SQL> 
+SQL> COLUMN "Order Date" FORMAT a10
+SQL> 
+SQL> SELECT OrderID as "Order ID", TO_CHAR(OrderDate, 'mm-dd-yyyy') as "Order Date", C.CustID as "CustID",
+  2  (CustFName || ' ' || CustLName) as "Name", CustPhone as "Phone"
+  3    FROM ORDER_pxm O, CUSTOMER_pxm C
+  4  WHERE O.CustID = C.CustID AND
+  5  	   OrderDate <= '26-JAN-2022'
+  6  ORDER BY OrderDate, O.CustID ;
+
+  Order ID Order Date CustID          Name                            Phone                                                                           
+---------- ---------- --------------- ------------------------------- ----------                                                                      
+       100 01-24-2022 S100            John Smith                      2145551212                                                                      
+       101 01-25-2022 A120            Jane Adams                      8175553434                                                                      
+       102 01-25-2022 J090            Tim Jones                                                                                                       
+       105 01-26-2022 B200            Ann Brown                       8175558918                                                                      
+       103 01-26-2022 B200            Ann Brown                       8175558918                                                                      
+       104 01-26-2022 S100            John Smith                      2145551212                                                                      
+
+6 rows selected.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II19
+SQL> 
+SQL> 
+SQL> SELECT CustID as "CustID", CustFName  as "FirstName", CustLName as "LastName"
+  2    FROM CUSTOMER_pxm
+  3  WHERE CustFName LIKE 'A%'
+  4    ORDER  BY CustLName ;
+
+CustID          FirstName       LastName                                                                                                              
+--------------- --------------- ---------------                                                                                                       
+B200            Ann             Brown                                                                                                                 
+G119            Amanda          Green                                                                                                                 
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Part II20
+SQL> 
+SQL> COLUMN "Customer ID" FORMAT A11
+SQL> 
+SQL> 
+SQL> SELECT CustID as "Customer ID", (CustFName || ' ' || CustLName) as "Name",
+  2  (SUBSTR(CustPhone,1,3) || '-' || SUBSTR(CustPhone,4,3) || '-' || SUBSTR(CustPhone,7,4)) as "Phone"
+  3    FROM CUSTOMER_pxm
+  4  WHERE SalesRepID = 12 ;
+
+Customer ID Name                            Phone                                                                                                     
+----------- ------------------------------- ------------------------------------------                                                                
+A120        Jane Adams                      817-555-3434                                                                                              
+
+SQL> 
+SQL> 
+SQL> 
+SQL> set echo off

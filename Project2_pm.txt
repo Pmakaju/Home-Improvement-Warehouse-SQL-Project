@@ -1,0 +1,977 @@
+SQL> -- This will ensure that all input and output is logged to the file.
+SQL> 
+SQL> -- Pradeep Makaju
+SQL> -- INSY 3304-001
+SQL> -- Project 2
+SQL> 
+SQL> 
+SQL> DROP TABLE ORDERDETAIL_pxm ;
+
+Table dropped.
+
+SQL> DROP TABLE ORDER_pxm ;
+
+Table dropped.
+
+SQL> DROP TABLE CUSTOMER_pxm ;
+
+Table dropped.
+
+SQL> DROP TABLE SALESREP_pxm ;
+
+Table dropped.
+
+SQL> DROP TABLE PRODUCT_pxm ;
+
+Table dropped.
+
+SQL> DROP TABLE COMMISSION_pxm ;
+
+Table dropped.
+
+SQL> DROP TABLE DEPARTMENT_pxm ;
+
+Table dropped.
+
+SQL> DROP TABLE PRODCAT_pxm ;
+
+Table dropped.
+
+SQL> 
+SQL> -- Part IA
+SQL> 
+SQL> CREATE TABLE PRODCAT_pxm
+  2  (
+  3  ProdCatID		     NUMBER(5),
+  4  ProdCatName     VARCHAR(20) NOT NULL,
+  5  PRIMARY KEY     (ProdCatID)
+  6  ) ;
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE DEPARTMENT_pxm
+  2  (
+  3  DeptID		     NUMBER(5),
+  4  DeptName		     VARCHAR(15) NOT NULL,
+  5  PRIMARY KEY     (DeptID)
+  6  ) ;
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE COMMISSION_pxm (
+  2  CommClass		     CHAR(20),
+  3  CommRate		     NUMBER(3,2) NOT NULL,
+  4  PRIMARY KEY     (CommClass)
+  5  ) ;
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE PRODUCT_pxm (
+  2  ProdID		     NUMBER(5),
+  3  ProdName		     VARCHAR(25) NOT NULL,
+  4  ProdCatID		     NUMBER(5) NOT NULL,
+  5  ProdPrice		     NUMBER(5,2) NOT NULL,
+  6  PRIMARY KEY     (ProdID),
+  7  FOREIGN KEY     (ProdCatID) REFERENCES PRODCAT_pxm
+  8  ) ;
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE SALESREP_pxm (
+  2  SalesRepID 	     NUMBER(5),
+  3  SalesRepFName   VARCHAR(17) NOT NULL,
+  4  SalesRepLName   VARCHAR(17) NOT NULL,
+  5  CommClass		     CHAR(20) NOT NULL,
+  6  DeptID		     NUMBER(5) NOT NULL,
+  7  PRIMARY KEY     (SalesRepID),
+  8  FOREIGN KEY     (CommClass) REFERENCES COMMISSION_pxm,
+  9  FOREIGN KEY     (DeptID) REFERENCES DEPARTMENT_pxm
+ 10  ) ;
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE CUSTOMER_pxm (
+  2  CustID		     CHAR(7) NOT NULL,
+  3  CustFName		     VARCHAR(15) NOT NULL,
+  4  CustLName		     VARCHAR(15) NOT NULL,
+  5  CustPhone		     CHAR(10),
+  6  SalesRepID 	     NUMBER(5) NOT NULL,
+  7  PRIMARY KEY     (CustID),
+  8  FOREIGN KEY     (SalesRepID) REFERENCES SALESREP_pxm
+  9  ) ;
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE ORDER_pxm (
+  2  OrderID		     NUMBER(5),
+  3  OrderDate		     DATE NOT NULL,
+  4  CustID		     CHAR(7) NOT NULL,
+  5  PRIMARY KEY     (OrderID),
+  6  FOREIGN KEY     (CustID) REFERENCES CUSTOMER_pxm
+  7  ) ;
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE ORDERDETAIL_pxm (
+  2  OrderID		     NUMBER(5),
+  3  ProdID		     NUMBER(5) NOT NULL,
+  4  ProdQty		     NUMBER(5) NOT NULL,
+  5  ProdPrice		     NUMBER(5,2) NOT NULL,
+  6  PRIMARY KEY     (OrderID,	     ProdID),
+  7  FOREIGN KEY     (OrderID) REFERENCES ORDER_pxm,
+  8  FOREIGN KEY     (ProdID) REFERENCES PRODUCT_pxm
+  9  ) ;
+
+Table created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> -- Part IB
+SQL> 
+SQL> DESCRIBE ORDERDETAIL_pxm
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ORDERID                                   NOT NULL NUMBER(5)
+ PRODID                                    NOT NULL NUMBER(5)
+ PRODQTY                                   NOT NULL NUMBER(5)
+ PRODPRICE                                 NOT NULL NUMBER(5,2)
+
+SQL> DESCRIBE ORDER_pxm
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ORDERID                                   NOT NULL NUMBER(5)
+ ORDERDATE                                 NOT NULL DATE
+ CUSTID                                    NOT NULL CHAR(7)
+
+SQL> DESCRIBE CUSTOMER_pxm
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ CUSTID                                    NOT NULL CHAR(7)
+ CUSTFNAME                                 NOT NULL VARCHAR2(15)
+ CUSTLNAME                                 NOT NULL VARCHAR2(15)
+ CUSTPHONE                                          CHAR(10)
+ SALESREPID                                NOT NULL NUMBER(5)
+
+SQL> DESCRIBE SALESREP_pxm
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ SALESREPID                                NOT NULL NUMBER(5)
+ SALESREPFNAME                             NOT NULL VARCHAR2(17)
+ SALESREPLNAME                             NOT NULL VARCHAR2(17)
+ COMMCLASS                                 NOT NULL CHAR(20)
+ DEPTID                                    NOT NULL NUMBER(5)
+
+SQL> DESCRIBE PRODUCT_pxm
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PRODID                                    NOT NULL NUMBER(5)
+ PRODNAME                                  NOT NULL VARCHAR2(25)
+ PRODCATID                                 NOT NULL NUMBER(5)
+ PRODPRICE                                 NOT NULL NUMBER(5,2)
+
+SQL> DESCRIBE COMMISSION_pxm
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ COMMCLASS                                 NOT NULL CHAR(20)
+ COMMRATE                                  NOT NULL NUMBER(3,2)
+
+SQL> DESCRIBE DEPARTMENT_pxm
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DEPTID                                    NOT NULL NUMBER(5)
+ DEPTNAME                                  NOT NULL VARCHAR2(15)
+
+SQL> DESCRIBE PRODCAT_pxm
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ PRODCATID                                 NOT NULL NUMBER(5)
+ PRODCATNAME                               NOT NULL VARCHAR2(20)
+
+SQL> 
+SQL> 
+SQL> 
+SQL> -- Part IIA
+SQL> 
+SQL> --Insert rows into PRODCAT table
+SQL> INSERT INTO PRODCAT_pxm
+  2  VALUES (1, 'Hand Tools') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODCAT_pxm
+  2  VALUES (2, 'Power Tools') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODCAT_pxm
+  2  VALUES (3, 'Measuring Tools');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODCAT_pxm
+  2  VALUES (4, 'Fasteners');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODCAT_pxm
+  2  VALUES (5, 'Hardware');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODCAT_pxm
+  2  VALUES (6, 'Misc');
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Insert rows into DEPARTMENT table
+SQL> INSERT INTO DEPARTMENT_pxm
+  2  VALUES (10, 'Store Sales') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO DEPARTMENT_pxm
+  2  VALUES (14, 'Corp Sales') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO DEPARTMENT_pxm
+  2  VALUES (16, 'Web Sales') ;
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Insert rows into COMMISSION table
+SQL> INSERT INTO COMMISSION_pxm
+  2  VALUES ('A', 0.1) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO COMMISSION_pxm
+  2  VALUES ('B', 0.08) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO COMMISSION_pxm
+  2  VALUES ('Z', 0) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO COMMISSION_pxm
+  2  VALUES ('C', 0.05) ;
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Insert rows into PRODUCT table
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (121, 'BD Hammer', 1, 7.00) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (228, 'Makita Power Drill', 2, 65.00) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (480, '1# BD Nails', 4, 3.00) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (407, '1# BD Screws', 4, 4.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (610, '3M Duct Tabe', 6, 1.75) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (618, '3M Masking Tape', 6, 1.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (380, 'Acme Yard Stick', 3, 1.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (535, 'Schlage Door Knob', 5, 7.50) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (123, 'Acme Pry Bar', 1, 6.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (229, 'BD Power Drill', 2, 59.00 ) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (124, 'Acme Hammer', 1, 6.50 ) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PRODUCT_pxm
+  2  VALUES (235, 'Makita Power Drill', 2, 65.00) ;
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Insert rows into SALESREP table
+SQL> INSERT INTO SALESREP_pxm
+  2  VALUES (10, 'Alice', 'Jones', 'A', 10) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO SALESREP_pxm
+  2  VALUES (12, 'Greg', 'Taylor','B',14);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO SALESREP_pxm
+  2  VALUES (14, 'Sara' ,'Day','Z' ,10);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO SALESREP_pxm
+  2  VALUES (8, 'Kay', 'Price', 'C', 14);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO SALESREP_pxm
+  2  VALUES (20, 'Bob', 'Jackson', 'B', 10);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO SALESREP_pxm
+  2  VALUES (22, 'Micah', 'Moore', 'Z', 16);
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> --Insert rows into CUSTOMER table
+SQL> INSERT INTO CUSTOMER_pxm
+  2  VALUES ('S100', 'John', 'Smith', '2145551212', 10) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO CUSTOMER_pxm
+  2  VALUES ('A120', 'Jane', 'Adams', '8175553434', 12) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO CUSTOMER_pxm
+  2  VALUES ('J090', 'Tim', 'Jones', NULL, 14) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO CUSTOMER_pxm
+  2  VALUES ('B200', 'Ann', 'Brown', '9725557979', 8);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO CUSTOMER_pxm
+  2  VALUES ('G070', 'Kate', 'Green', '8175551034', 20) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO CUSTOMER_pxm
+  2  VALUES ('S120', 'Nicole', 'Sims', NULL, 22);
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> --Insert rows into ORDER table
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES (100, '24-JAN-2022', 'S100') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES (101, '25-JAN-2022', 'A120') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES (102, '25-JAN-2022', 'J090') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES (103, '26-JAN-2022', 'B200') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES (104, '26-JAN-2022', 'S100') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES (105, '26-JAN-2022', 'B200') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES (106, '27-JAN-2022', 'G070') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES (107, '27-JAN-2022', 'J090') ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES (108, '27-JAN-2022', 'S120') ;
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> --Insert rows into ORDERDETAIL table
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (100, 121, 2, 8.00) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (100, 228, 1, 65.00) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (100, 480, 2, 3) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (100, 407, 1, 4.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (101, 610, 200, 1.75) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (101, 618, 100, 1.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (102, 380, 2, 1.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (102, 121, 1, 7.00) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (102, 535, 4, 7.50) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (103, 121, 50, 7.00) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (103, 123, 20, 6.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (104, 229, 1, 50.00) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (104, 610,200, 1.75) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (104, 380, 2, 1.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (104, 535, 4, 7.50) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (105, 610, 200, 1.75) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (105, 123, 40, 5.00) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (106, 124, 1, 6.50) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (107, 229, 1, 59.00) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (108, 235, 1, 65.00) ;
+
+1 row created.
+
+SQL> 
+SQL> --Save all rows to disk
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> 
+SQL> --Part IIB
+SQL> 
+SQL> SELECT * FROM PRODCAT_pxm ;
+
+ PRODCATID PRODCATNAME                                                          
+---------- --------------------                                                 
+         1 Hand Tools                                                           
+         2 Power Tools                                                          
+         3 Measuring Tools                                                      
+         4 Fasteners                                                            
+         5 Hardware                                                             
+         6 Misc                                                                 
+
+6 rows selected.
+
+SQL> SELECT * FROM DEPARTMENT_pxm ;
+
+    DEPTID DEPTNAME                                                             
+---------- ---------------                                                      
+        10 Store Sales                                                          
+        14 Corp Sales                                                           
+        16 Web Sales                                                            
+
+SQL> SELECT * FROM COMMISSION_pxm ;
+
+COMMCLASS              COMMRATE                                                 
+-------------------- ----------                                                 
+A                            .1                                                 
+B                           .08                                                 
+Z                             0                                                 
+C                           .05                                                 
+
+SQL> SELECT * FROM PRODUCT_pxm ;
+
+    PRODID PRODNAME                   PRODCATID  PRODPRICE                      
+---------- ------------------------- ---------- ----------                      
+       121 BD Hammer                          1          7                      
+       228 Makita Power Drill                 2         65                      
+       480 1# BD Nails                        4          3                      
+       407 1# BD Screws                       4       4.25                      
+       610 3M Duct Tabe                       6       1.75                      
+       618 3M Masking Tape                    6       1.25                      
+       380 Acme Yard Stick                    3       1.25                      
+       535 Schlage Door Knob                  5        7.5                      
+       123 Acme Pry Bar                       1       6.25                      
+       229 BD Power Drill                     2         59                      
+       124 Acme Hammer                        1        6.5                      
+
+    PRODID PRODNAME                   PRODCATID  PRODPRICE                      
+---------- ------------------------- ---------- ----------                      
+       235 Makita Power Drill                 2         65                      
+
+12 rows selected.
+
+SQL> SELECT * FROM SALESREP_pxm ;
+
+SALESREPID SALESREPFNAME     SALESREPLNAME     COMMCLASS                DEPTID  
+---------- ----------------- ----------------- -------------------- ----------  
+        10 Alice             Jones             A                            10  
+        12 Greg              Taylor            B                            14  
+        14 Sara              Day               Z                            10  
+         8 Kay               Price             C                            14  
+        20 Bob               Jackson           B                            10  
+        22 Micah             Moore             Z                            16  
+
+6 rows selected.
+
+SQL> SELECT * FROM CUSTOMER_pxm ;
+
+CUSTID  CUSTFNAME       CUSTLNAME       CUSTPHONE  SALESREPID                   
+------- --------------- --------------- ---------- ----------                   
+S100    John            Smith           2145551212         10                   
+A120    Jane            Adams           8175553434         12                   
+J090    Tim             Jones                              14                   
+B200    Ann             Brown           9725557979          8                   
+G070    Kate            Green           8175551034         20                   
+S120    Nicole          Sims                               22                   
+
+6 rows selected.
+
+SQL> SELECT * FROM ORDER_pxm ;
+
+   ORDERID ORDERDATE CUSTID                                                     
+---------- --------- -------                                                    
+       100 24-JAN-22 S100                                                       
+       101 25-JAN-22 A120                                                       
+       102 25-JAN-22 J090                                                       
+       103 26-JAN-22 B200                                                       
+       104 26-JAN-22 S100                                                       
+       105 26-JAN-22 B200                                                       
+       106 27-JAN-22 G070                                                       
+       107 27-JAN-22 J090                                                       
+       108 27-JAN-22 S120                                                       
+
+9 rows selected.
+
+SQL> SELECT * FROM ORDERDETAIL_pxm ;
+
+   ORDERID     PRODID    PRODQTY  PRODPRICE                                     
+---------- ---------- ---------- ----------                                     
+       100        121          2          8                                     
+       100        228          1         65                                     
+       100        480          2          3                                     
+       100        407          1       4.25                                     
+       101        610        200       1.75                                     
+       101        618        100       1.25                                     
+       102        380          2       1.25                                     
+       102        121          1          7                                     
+       102        535          4        7.5                                     
+       103        121         50          7                                     
+       103        123         20       6.25                                     
+
+   ORDERID     PRODID    PRODQTY  PRODPRICE                                     
+---------- ---------- ---------- ----------                                     
+       104        229          1         50                                     
+       104        610        200       1.75                                     
+       104        380          2       1.25                                     
+       104        535          4        7.5                                     
+       105        610        200       1.75                                     
+       105        123         40          5                                     
+       106        124          1        6.5                                     
+       107        229          1         59                                     
+       108        235          1         65                                     
+
+20 rows selected.
+
+SQL> 
+SQL> 
+SQL> --Part III
+SQL> 
+SQL> --CUSTOMER TablE
+SQL> --Changing Customer's phone number
+SQL> UPDATE CUSTOMER_pxm
+  2  	     SET CustPhone = '2145551234'
+  3  WHERE CustID = 'B200' ;
+
+1 row updated.
+
+SQL> 
+SQL> --Adding new customer
+SQL> INSERT INTO CUSTOMER_pxm
+  2  VALUES ('G119', 'Amanda', 'Green', NULL, 14) ;
+
+1 row created.
+
+SQL> 
+SQL> --ORDER Table
+SQL> --Changing order date
+SQL> UPDATE ORDER_pxm
+  2  	     SET OrderDate = '28-JAN-2022'
+  3  WHERE  OrderID = 108 ;
+
+1 row updated.
+
+SQL> 
+SQL> --Adding new order
+SQL> INSERT INTO ORDER_pxm
+  2  VALUES (109, '28-JAN-2022', 'G119') ;
+
+1 row created.
+
+SQL> 
+SQL> --ORDERDETAIL Table
+SQL> --Changing price of Product
+SQL> UPDATE ORDERDETAIL_pxm
+  2  	     SET ProdPrice = 62.00
+  3  WHERE ProdID = 235 AND OrderID = 108 ;
+
+1 row updated.
+
+SQL> 
+SQL> --Adding the Products
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (108, 407, 1, 5.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (108, 618, 2, 2.15) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (109, 121, 1, 8.25) ;
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO ORDERDETAIL_pxm
+  2  VALUES (109, 480, 1, 3.75) ;
+
+1 row created.
+
+SQL> 
+SQL> --COMMIT to Save changes to disk
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> 
+SQL> --Part IV
+SQL> 
+SQL> SELECT * FROM PRODCAT_pxm
+  2   ORDER BY ProdCatID ;
+
+ PRODCATID PRODCATNAME                                                          
+---------- --------------------                                                 
+         1 Hand Tools                                                           
+         2 Power Tools                                                          
+         3 Measuring Tools                                                      
+         4 Fasteners                                                            
+         5 Hardware                                                             
+         6 Misc                                                                 
+
+6 rows selected.
+
+SQL> SELECT * FROM DEPARTMENT_pxm
+  2   ORDER BY DeptName ;
+
+    DEPTID DEPTNAME                                                             
+---------- ---------------                                                      
+        14 Corp Sales                                                           
+        10 Store Sales                                                          
+        16 Web Sales                                                            
+
+SQL> SELECT * FROM COMMISSION_pxm
+  2   ORDER BY CommClass ;
+
+COMMCLASS              COMMRATE                                                 
+-------------------- ----------                                                 
+A                            .1                                                 
+B                           .08                                                 
+C                           .05                                                 
+Z                             0                                                 
+
+SQL> SELECT * FROM PRODUCT_pxm
+  2   ORDER BY ProdID ;
+
+    PRODID PRODNAME                   PRODCATID  PRODPRICE                      
+---------- ------------------------- ---------- ----------                      
+       121 BD Hammer                          1          7                      
+       123 Acme Pry Bar                       1       6.25                      
+       124 Acme Hammer                        1        6.5                      
+       228 Makita Power Drill                 2         65                      
+       229 BD Power Drill                     2         59                      
+       235 Makita Power Drill                 2         65                      
+       380 Acme Yard Stick                    3       1.25                      
+       407 1# BD Screws                       4       4.25                      
+       480 1# BD Nails                        4          3                      
+       535 Schlage Door Knob                  5        7.5                      
+       610 3M Duct Tabe                       6       1.75                      
+
+    PRODID PRODNAME                   PRODCATID  PRODPRICE                      
+---------- ------------------------- ---------- ----------                      
+       618 3M Masking Tape                    6       1.25                      
+
+12 rows selected.
+
+SQL> SELECT * FROM SALESREP_pxm
+  2   ORDER BY SalesRepID ;
+
+SALESREPID SALESREPFNAME     SALESREPLNAME     COMMCLASS                DEPTID  
+---------- ----------------- ----------------- -------------------- ----------  
+         8 Kay               Price             C                            14  
+        10 Alice             Jones             A                            10  
+        12 Greg              Taylor            B                            14  
+        14 Sara              Day               Z                            10  
+        20 Bob               Jackson           B                            10  
+        22 Micah             Moore             Z                            16  
+
+6 rows selected.
+
+SQL> SELECT * FROM CUSTOMER_pxm
+  2   ORDER BY CustID ;
+
+CUSTID  CUSTFNAME       CUSTLNAME       CUSTPHONE  SALESREPID                   
+------- --------------- --------------- ---------- ----------                   
+A120    Jane            Adams           8175553434         12                   
+B200    Ann             Brown           2145551234          8                   
+G070    Kate            Green           8175551034         20                   
+G119    Amanda          Green                              14                   
+J090    Tim             Jones                              14                   
+S100    John            Smith           2145551212         10                   
+S120    Nicole          Sims                               22                   
+
+7 rows selected.
+
+SQL> SELECT * FROM ORDER_pxm
+  2   ORDER BY OrderID ;
+
+   ORDERID ORDERDATE CUSTID                                                     
+---------- --------- -------                                                    
+       100 24-JAN-22 S100                                                       
+       101 25-JAN-22 A120                                                       
+       102 25-JAN-22 J090                                                       
+       103 26-JAN-22 B200                                                       
+       104 26-JAN-22 S100                                                       
+       105 26-JAN-22 B200                                                       
+       106 27-JAN-22 G070                                                       
+       107 27-JAN-22 J090                                                       
+       108 28-JAN-22 S120                                                       
+       109 28-JAN-22 G119                                                       
+
+10 rows selected.
+
+SQL> SELECT * FROM ORDERDETAIL_pxm
+  2   ORDER BY OrderID,      ProdID ;
+
+   ORDERID     PRODID    PRODQTY  PRODPRICE                                     
+---------- ---------- ---------- ----------                                     
+       100        121          2          8                                     
+       100        228          1         65                                     
+       100        407          1       4.25                                     
+       100        480          2          3                                     
+       101        610        200       1.75                                     
+       101        618        100       1.25                                     
+       102        121          1          7                                     
+       102        380          2       1.25                                     
+       102        535          4        7.5                                     
+       103        121         50          7                                     
+       103        123         20       6.25                                     
+
+   ORDERID     PRODID    PRODQTY  PRODPRICE                                     
+---------- ---------- ---------- ----------                                     
+       104        229          1         50                                     
+       104        380          2       1.25                                     
+       104        535          4        7.5                                     
+       104        610        200       1.75                                     
+       105        123         40          5                                     
+       105        610        200       1.75                                     
+       106        124          1        6.5                                     
+       107        229          1         59                                     
+       108        235          1         62                                     
+       108        407          1       5.25                                     
+       108        618          2       2.15                                     
+
+   ORDERID     PRODID    PRODQTY  PRODPRICE                                     
+---------- ---------- ---------- ----------                                     
+       109        121          1       8.25                                     
+       109        480          1       3.75                                     
+
+24 rows selected.
+
+SQL> 
+SQL> 
+SQL> 
+SQL> set echo off
